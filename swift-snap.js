@@ -43,7 +43,6 @@ let displaySaved = function () {
     browser.storage.local.get((data) => {
       savedConfig = data.saved ?? [];
       for (let i = 0; i < savedConfig.length; i++) {
-        console.log(commands[i].shortcut);
         if (i >= 0 && i <= 3) {
           appendConfig(savedConfig[i], commands[i + 1].shortcut);
         } else {
@@ -76,6 +75,16 @@ let updateDebug = function () {
         null,
         2
       );
+  });
+  browser.system.display.getInfo((displays) => {
+    let bounds = displays.map((d) => d.bounds);
+    if (debug) {
+      document.getElementById("window-info").innerText += JSON.stringify(
+        bounds,
+        null,
+        2
+      );
+    }
   });
 };
 

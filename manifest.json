@@ -1,10 +1,12 @@
 {
   "manifest_version": 2,
   "name": "Swift Snap",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Snap and save your window positions",
   "icons": {
-    "48": "icons/swift-snap-48.png"
+    "16": "icons/swift-snap-16.png",
+    "48": "icons/swift-snap-48.png",
+    "128": "icons/swift-snap-128.png"
   },
   "background": {
     "page": "background.html",
@@ -45,5 +47,5 @@
       "description": "Swift Snap Down"
     }
   },
-  "permissions": ["activeTab", "storage", "tabs"]
+  "permissions": ["storage", "system.display"]
 }

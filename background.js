@@ -9,21 +9,12 @@ let shortcutIndex = [
   "swift-snap-up",
 ];
 
-let index = -1;
-
+// TODO: Map each config to different shortcut
 browser.commands.onCommand.addListener((command) => {
-  index = shortcutIndex.indexOf(command) || 0;
-  console.log(index);
-  browser.tabs.executeScript({
-    code:
-      "chrome.runtime.sendMessage({top: window.screen.availTop, left: window.screen.availLeft, width: window.screen.availWidth, height: window.screen.availHeight});",
-  });
-});
-
-browser.runtime.onMessage.addListener((req) => {
+  let index = shortcutIndex.indexOf(command) || 0;
   browser.storage.local.get((configs) => {
     if (index < configs.saved.length) {
-      Snap.toConfig(configs.saved[index], req);
+      Snap.toConfig(configs.saved[index]);
       index = -1;
     }
   });
