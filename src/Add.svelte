@@ -1,5 +1,5 @@
 <script>
-  import { layouts } from "./layouts.js";
+  import { layouts } from "./layout-manager.js";
 </script>
 
 <style>

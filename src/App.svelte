@@ -1,5 +1,5 @@
 <script>
-  import { layouts } from "./layouts.js";
+  import { layouts } from "./layout-manager.js";
   import { onDestroy } from "svelte";
   import Add from "./Add.svelte";
   import Layout from "./Layout.svelte";

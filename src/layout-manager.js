@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { Rect } from "./layout.js";
+import { Rect } from "./rect.js";
 import { determineScreenOfWindow, snap } from "../public/snap.js";
 
 let browser = chrome;
