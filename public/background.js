@@ -1,5 +1,7 @@
 import Snap from "./snap.js";
 
+// TODO: Migrate to the new layout snap function.
+
 let browser = chrome;
 
 let shortcutIndex = [

@@ -15,7 +15,7 @@
   "browser_action": {
     "default_icon": "icons/swift-snap-48.png",
     "default_title": "Swift Snap",
-    "default_popup": "swift-snap.html"
+    "default_popup": "index.html"
   },
   "commands": {
     "swift-snap-left": {
