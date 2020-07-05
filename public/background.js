@@ -1,4 +1,6 @@
-import Snap from "./snap.js";
+import { snap } from "./snap.js";
+
+// TODO: Migrate to the new layout snap function.
 
 let browser = chrome;
 
@@ -14,7 +16,7 @@ browser.commands.onCommand.addListener((command) => {
   let index = shortcutIndex.indexOf(command) || 0;
   browser.storage.local.get((configs) => {
     if (index < configs.saved.length) {
-      Snap.toConfig(configs.saved[index]);
+      snap(configs.saved[index]);
       index = -1;
     }
   });

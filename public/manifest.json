@@ -15,34 +15,34 @@
   "browser_action": {
     "default_icon": "icons/swift-snap-48.png",
     "default_title": "Swift Snap",
-    "default_popup": "swift-snap.html"
+    "default_popup": "index.html"
   },
   "commands": {
     "swift-snap-left": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Left",
-        "mac": "Command+Shift+Left"
+        "default": "Alt+Shift+Left",
+        "mac": "Alt+Shift+Left"
       },
       "description": "Swift Snap Left"
     },
     "swift-snap-right": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Right",
-        "mac": "Command+Shift+Right"
+        "default": "Alt+Shift+Right",
+        "mac": "Alt+Shift+Right"
       },
       "description": "Swift Snap Right"
     },
     "swift-snap-up": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Up",
-        "mac": "Command+Shift+Up"
+        "default": "Alt+Shift+Up",
+        "mac": "Alt+Shift+Up"
       },
       "description": "Swift Snap Up"
     },
     "swift-snap-down": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Down",
-        "mac": "Command+Shift+Down"
+        "default": "Alt+Shift+Down",
+        "mac": "Alt+Shift+Down"
       },
       "description": "Swift Snap Down"
     }
