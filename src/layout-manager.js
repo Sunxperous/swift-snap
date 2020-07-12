@@ -38,6 +38,22 @@ function createLayoutsManager() {
         });
       });
     },
+    updateShortcut: (layout, shortcut) => {
+      browser.storage.local.get({ saved: [] }, (storedData) => {
+        for (const c of storedData.saved) {
+          if (Rect.fromObj(c).equals(layout)) {
+            if (!shortcut) {
+              delete c.shortcut;
+            } else {
+              c.shortcut = shortcut;
+            }
+          }
+        }
+        browser.storage.local.set({ saved: storedData.saved }, () => {
+          set(storedData.saved);
+        });
+      });
+    },
     clear: () => {
       browser.storage.local.clear(() => set([]));
     },
