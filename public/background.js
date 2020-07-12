@@ -1,23 +1,35 @@
-import { snap } from "./snap.js";
-
-// TODO: Migrate to the new layout snap function.
+import { determineScreenOfWindow, snap } from "./snap.js";
+import { Rect } from "./rect.js";
 
 let browser = chrome;
 
-let shortcutIndex = [
-  "swift-snap-down",
-  "swift-snap-left",
-  "swift-snap-right",
-  "swift-snap-up",
-];
-
-// TODO: Map each config to different shortcut
 browser.commands.onCommand.addListener((command) => {
-  let index = shortcutIndex.indexOf(command) || 0;
-  browser.storage.local.get((configs) => {
-    if (index < configs.saved.length) {
-      snap(configs.saved[index]);
-      index = -1;
-    }
+  browser.system.display.getInfo((displays) => {
+    browser.windows.getCurrent((currWindow) => {
+      screen = determineScreenOfWindow(currWindow, displays);
+      let layout = Rect.forRatio(
+        Rect.fromObj(currWindow),
+        Rect.fromObj(screen)
+      );
+      browser.storage.local.get((data) => {
+        let layouts = data.saved;
+        let activeIndex = layouts.findIndex((l) => layout.equals(l));
+        let i = activeIndex + 1;
+        if (i >= layouts.length) {
+          i = 0;
+        }
+        while (i < layouts.length || i !== activeIndex) {
+          if (layouts[i].shortcut === command) {
+            snap(layouts[i]);
+            return;
+          }
+          if (i === layouts.length - 1) {
+            i = 0;
+          } else {
+            i++;
+          }
+        }
+      });
+    });
   });
 });
