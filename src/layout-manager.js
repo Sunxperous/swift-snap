@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { Rect } from "./rect.js";
+import { Rect } from "../public/rect.js";
 import { determineScreenOfWindow, snap } from "../public/snap.js";
 
 let browser = chrome;
@@ -35,6 +35,22 @@ function createLayoutsManager() {
         );
         browser.storage.local.set({ saved: updatedData }, () => {
           set(updatedData);
+        });
+      });
+    },
+    updateShortcut: (layout, shortcut) => {
+      browser.storage.local.get({ saved: [] }, (storedData) => {
+        for (const c of storedData.saved) {
+          if (Rect.fromObj(c).equals(layout)) {
+            if (!shortcut) {
+              delete c.shortcut;
+            } else {
+              c.shortcut = shortcut;
+            }
+          }
+        }
+        browser.storage.local.set({ saved: storedData.saved }, () => {
+          set(storedData.saved);
         });
       });
     },

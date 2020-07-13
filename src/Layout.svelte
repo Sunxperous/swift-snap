@@ -1,5 +1,6 @@
 <script>
   import { layouts } from "./layout-manager.js";
+  import Shortcut from "./Shortcut.svelte";
   export let layout;
 
   let height = 80;
@@ -13,12 +14,20 @@
   function remove() {
     layouts.remove(layout);
   }
+
+  function updateShortcut(event) {
+    let selectedShortcut = event.detail;
+    if (!layout.shortcut || layout.shortcut !== selectedShortcut) {
+      layouts.updateShortcut(layout, selectedShortcut);
+    }
+  }
 </script>
 
 <style>
   .container {
-    display: flex;
     align-items: center;
+    display: flex;
+    flex-direction: column;
   }
   .screen {
     background: var(--primary-color);
@@ -42,5 +51,8 @@
   <div class="screen" style={screenStyle} on:click={layouts.snap(layout)}>
     <div class="overlay" style={overlayStyle} />
   </div>
-  <div class="remove" on:click={remove}>x</div>
+  <div>
+    <Shortcut shortcutName={layout.shortcut} on:select={updateShortcut} />
+    <button class="remove" on:click={remove}>x</button>
+  </div>
 </div>
