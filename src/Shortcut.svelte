@@ -11,10 +11,6 @@
 </script>
 
 <style>
-  pre {
-    word-wrap: break-word;
-    white-space: pre-wrap;
-  }
 </style>
 
 <select bind:value={shortcutName} on:change={handleSelect}>

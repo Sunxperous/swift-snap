@@ -13,21 +13,24 @@ browser.commands.onCommand.addListener((command) => {
       );
       browser.storage.local.get((data) => {
         let layouts = data.saved;
-        let activeIndex = layouts.findIndex((l) => layout.equals(l));
-        let i = activeIndex + 1;
-        if (i >= layouts.length) {
-          i = 0;
-        }
-        while (i < layouts.length || i !== activeIndex) {
+        let firstMatch = -1;
+        let matchesCurrentLayout = false;
+        for (let i = 0; i < layouts.length; ++i) {
           if (layouts[i].shortcut === command) {
-            snap(layouts[i]);
-            return;
+            if (matchesCurrentLayout) {
+              snap(layouts[i]);
+              return;
+            }
+            if (layout.equals(layouts[i])) {
+              matchesCurrentLayout = true;
+            }
+            if (firstMatch === -1) {
+              firstMatch = i;
+            }
           }
-          if (i === layouts.length - 1) {
-            i = 0;
-          } else {
-            i++;
-          }
+        }
+        if (firstMatch > -1) {
+          snap(layouts[firstMatch]);
         }
       });
     });
