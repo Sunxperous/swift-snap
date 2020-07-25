@@ -1,8 +1,10 @@
-import { writable } from "svelte/store";
-import { Rect } from "../public/rect.js";
-import { determineScreenOfWindow, snap } from "../public/snap.js";
+import "chrome-extension-async";
 
-let browser = chrome;
+import { writable } from "svelte/store";
+import { Rect } from "./rect.js";
+import { determineScreenOfWindow, snap } from "./snap.js";
+
+const browser = chrome;
 
 function createLayoutsManager() {
   const { subscribe, set } = writable([]);
@@ -10,52 +12,46 @@ function createLayoutsManager() {
   const layoutsStore = {
     subscribe,
     add: () => {
-      browser.system.display.getInfo((displays) => {
-        browser.windows.getCurrent((currWindow) => {
-          screen = determineScreenOfWindow(currWindow, displays);
-          let layout = Rect.forRatio(
-            Rect.fromObj(currWindow),
-            Rect.fromObj(screen)
-          );
-          browser.storage.local.get({ saved: [] }, (storedData) => {
-            if (storedData.saved.some((c) => Rect.fromObj(c).equals(layout))) {
-              set(storedData.saved);
-              return;
-            }
-            const newStore = [...storedData.saved, layout];
-            browser.storage.local.set({ saved: newStore }, () => set(newStore));
-          });
-        });
-      });
-    },
-    remove: (layout) => {
-      browser.storage.local.get({ saved: [] }, (storedData) => {
-        let updatedData = storedData.saved.filter(
-          (c) => !Rect.fromObj(c).equals(layout)
+      browser.system.display.getInfo(async (displays) => {
+        const currWindow = await browser.windows.getCurrent();
+        screen = determineScreenOfWindow(currWindow, displays);
+        const layout = Rect.forRatio(
+          Rect.fromObj(currWindow),
+          Rect.fromObj(screen)
         );
-        browser.storage.local.set({ saved: updatedData }, () => {
-          set(updatedData);
-        });
+        const saved = (await browser.storage.local.get({ saved: [] })).saved;
+        if (saved.some((c) => Rect.fromObj(c).equals(layout))) {
+          set(saved);
+          return;
+        }
+        const newStore = [...saved, layout];
+        await browser.storage.local.set({ saved: newStore });
+        set(newStore);
       });
     },
-    updateShortcut: (layout, shortcut) => {
-      browser.storage.local.get({ saved: [] }, (storedData) => {
-        for (const c of storedData.saved) {
-          if (Rect.fromObj(c).equals(layout)) {
-            if (!shortcut) {
-              delete c.shortcut;
-            } else {
-              c.shortcut = shortcut;
-            }
+    remove: async (layout) => {
+      const saved = (await browser.storage.local.get({ saved: [] })).saved;
+      const updatedData = saved.filter((c) => !Rect.fromObj(c).equals(layout));
+      await browser.storage.local.set({ saved: updatedData });
+      set(updatedData);
+    },
+    updateShortcut: async (layout, shortcut) => {
+      const saved = (await browser.storage.local.get({ saved: [] })).saved;
+      for (const c of saved) {
+        if (Rect.fromObj(c).equals(layout)) {
+          if (!shortcut) {
+            delete c.shortcut;
+          } else {
+            c.shortcut = shortcut;
           }
         }
-        browser.storage.local.set({ saved: storedData.saved }, () => {
-          set(storedData.saved);
-        });
-      });
+      }
+      await browser.storage.local.set({ saved: saved });
+      set(saved);
     },
-    clear: () => {
-      browser.storage.local.clear(() => set([]));
+    clear: async () => {
+      await browser.storage.local.clear();
+      set([]);
     },
     snap: (layout) => snap(layout),
   };

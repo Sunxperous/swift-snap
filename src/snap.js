@@ -1,3 +1,5 @@
+import "chrome-extension-async";
+
 let browser = chrome;
 
 function determineScreenOfWindow(currWindow, displays) {
@@ -21,16 +23,15 @@ function determineScreenOfWindow(currWindow, displays) {
 }
 
 function snap(layout) {
-  browser.system.display.getInfo((displays) => {
-    browser.windows.getCurrent((currWindow) => {
-      screen = determineScreenOfWindow(currWindow, displays);
-      browser.windows.update(currWindow.id, {
-        top: Math.round(layout.top * screen.height + screen.top),
-        left: Math.round(layout.left * screen.width + screen.left),
-        width: Math.round(layout.width * screen.width),
-        height: Math.round(layout.height * screen.height),
-        state: "normal",
-      });
+  browser.system.display.getInfo(async (displays) => {
+    const currWindow = await browser.windows.getCurrent();
+    screen = determineScreenOfWindow(currWindow, displays);
+    browser.windows.update(currWindow.id, {
+      top: Math.round(layout.top * screen.height + screen.top),
+      left: Math.round(layout.left * screen.width + screen.left),
+      width: Math.round(layout.width * screen.width),
+      height: Math.round(layout.height * screen.height),
+      state: "normal",
     });
   });
 }
