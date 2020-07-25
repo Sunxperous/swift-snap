@@ -1,15 +1,15 @@
 import "chrome-extension-async";
 
-let browser = chrome;
+const browser = chrome;
 
 function determineScreenOfWindow(currWindow, displays) {
-  let windowCenterX = currWindow.left + currWindow.width / 2;
-  let windowCenterY = currWindow.top + currWindow.height / 2;
+  const windowCenterX = currWindow.left + currWindow.width / 2;
+  const windowCenterY = currWindow.top + currWindow.height / 2;
   for (let display of displays) {
-    let displayLeft = display.workArea.left;
-    let displayRight = display.workArea.left + display.workArea.width;
-    let displayTop = display.workArea.top;
-    let displayBottom = display.workArea.top + display.workArea.height;
+    const displayLeft = display.workArea.left;
+    const displayRight = display.workArea.left + display.workArea.width;
+    const displayTop = display.workArea.top;
+    const displayBottom = display.workArea.top + display.workArea.height;
     if (
       windowCenterX >= displayLeft &&
       windowCenterX <= displayRight &&

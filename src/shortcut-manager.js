@@ -1,7 +1,7 @@
 import "chrome-extension-async";
 import { readable } from "svelte/store";
 
-let browser = chrome;
+const browser = chrome;
 
 const supportedShortcuts = {
   "swift-snap-down": "",
