@@ -1,6 +1,7 @@
+import "chrome-extension-async";
 import { readable } from "svelte/store";
 
-let browser = chrome;
+const browser = chrome;
 
 const supportedShortcuts = {
   "swift-snap-down": "",
@@ -9,15 +10,14 @@ const supportedShortcuts = {
   "swift-snap-up": "",
 };
 
-export const shortcuts = readable({}, function start(set) {
-  browser.commands.getAll((chromeShortcuts) => {
-    chromeShortcuts
-      .filter((sc) => Object.keys(supportedShortcuts).includes(sc.name))
-      .forEach((sc) => {
-        supportedShortcuts[sc.name] = sc.shortcut;
-      });
-    set(supportedShortcuts);
-  });
+export const shortcuts = readable({}, async function start(set) {
+  const chromeShortcuts = await browser.commands.getAll();
+  chromeShortcuts
+    .filter((sc) => Object.keys(supportedShortcuts).includes(sc.name))
+    .forEach((sc) => {
+      supportedShortcuts[sc.name] = sc.shortcut;
+    });
+  set(supportedShortcuts);
 
   return function stop() {
     // Do nothing.

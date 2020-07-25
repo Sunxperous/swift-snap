@@ -3,11 +3,11 @@
   import Shortcut from "./Shortcut.svelte";
   export let layout;
 
-  let height = 80;
-  let width = (window.screen.width / window.screen.height) * height;
+  const height = 80;
+  const width = (window.screen.width / window.screen.height) * height;
 
-  let screenStyle = "height: " + height + "px; width: " + width + "px;";
-  let overlayStyle = `top: ${layout.top * height} px; left: ${layout.left *
+  const screenStyle = "height: " + height + "px; width: " + width + "px;";
+  const overlayStyle = `top: ${layout.top * height} px; left: ${layout.left *
     width}px; width: ${layout.width * width}px; height: ${layout.height *
     height}px;`;
 
@@ -16,7 +16,7 @@
   }
 
   function updateShortcut(event) {
-    let selectedShortcut = event.detail;
+    const selectedShortcut = event.detail;
     if (!layout.shortcut || layout.shortcut !== selectedShortcut) {
       layouts.updateShortcut(layout, selectedShortcut);
     }

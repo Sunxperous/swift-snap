@@ -1,5 +1,3 @@
-let browser = chrome;
-
 class Rect {
   static fromObj(w) {
     return new Rect(w.top, w.left, w.width, w.height);
