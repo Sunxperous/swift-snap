@@ -10,7 +10,7 @@ const supportedShortcuts = {
   "swift-snap-up": "",
 };
 
-export const shortcuts = readable({}, async function start(set) {
+async function loadAndSetShortcuts(set) {
   const chromeShortcuts = await browser.commands.getAll();
   chromeShortcuts
     .filter((sc) => Object.keys(supportedShortcuts).includes(sc.name))
@@ -18,6 +18,10 @@ export const shortcuts = readable({}, async function start(set) {
       supportedShortcuts[sc.name] = sc.shortcut;
     });
   set(supportedShortcuts);
+}
+
+export const shortcuts = readable({}, function start(set) {
+  loadAndSetShortcuts(set);
 
   return function stop() {
     // Do nothing.

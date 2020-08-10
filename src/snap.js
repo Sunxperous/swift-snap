@@ -1,5 +1,7 @@
 import "chrome-extension-async";
 
+import { Rect } from "./rect.js";
+
 const browser = chrome;
 
 function determineScreenOfWindow(currWindow, displays) {
@@ -22,17 +24,17 @@ function determineScreenOfWindow(currWindow, displays) {
   return display[0].workArea;
 }
 
-function snap(layout) {
+function snap(layout, callback) {
   browser.system.display.getInfo(async (displays) => {
     const currWindow = await browser.windows.getCurrent();
-    screen = determineScreenOfWindow(currWindow, displays);
-    browser.windows.update(currWindow.id, {
-      top: Math.round(layout.top * screen.height + screen.top),
-      left: Math.round(layout.left * screen.width + screen.left),
-      width: Math.round(layout.width * screen.width),
-      height: Math.round(layout.height * screen.height),
-      state: "normal",
-    });
+    const screen = determineScreenOfWindow(currWindow, displays);
+    const newWindowSize = Rect.calculateWindow(layout, screen);
+    newWindowSize.state = "normal";
+    await browser.windows.update(currWindow.id, newWindowSize);
+    const port = browser.runtime.connect({name: 'snap-shortcut'});
+    port.postMessage("snap");
+    port.disconnect();
+    if (callback) callback();
   });
 }
 

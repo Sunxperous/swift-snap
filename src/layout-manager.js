@@ -14,16 +14,18 @@ function createLayoutsManager() {
     add: () => {
       browser.system.display.getInfo(async (displays) => {
         const currWindow = await browser.windows.getCurrent();
-        screen = determineScreenOfWindow(currWindow, displays);
+        const screen = determineScreenOfWindow(currWindow, displays);
+        const saved = (await browser.storage.local.get({ saved: [] })).saved;
+        if (
+          saved.some((c) => Rect.calculateWindow(c, screen).equals(currWindow))
+        ) {
+          set(saved);
+          return;
+        }
         const layout = Rect.forRatio(
           Rect.fromObj(currWindow),
           Rect.fromObj(screen)
         );
-        const saved = (await browser.storage.local.get({ saved: [] })).saved;
-        if (saved.some((c) => Rect.fromObj(c).equals(layout))) {
-          set(saved);
-          return;
-        }
         const newStore = [...saved, layout];
         await browser.storage.local.set({ saved: newStore });
         set(newStore);
@@ -53,7 +55,7 @@ function createLayoutsManager() {
       await browser.storage.local.clear();
       set([]);
     },
-    snap: (layout) => snap(layout),
+    snap: (layout, callback) => snap(layout, callback),
   };
 
   browser.storage.local.get({ saved: [] }, (data) => {

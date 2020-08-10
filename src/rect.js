@@ -1,3 +1,5 @@
+const decimalPlaces = 4;
+
 class Rect {
   static fromObj(w) {
     return new Rect(w.top, w.left, w.width, w.height);
@@ -5,10 +7,19 @@ class Rect {
 
   static forRatio(w, screen) {
     return new Rect(
-      (w.top - screen.top) / screen.height,
-      (w.left - screen.left) / screen.width,
-      w.width / screen.width,
-      w.height / screen.height
+      ((w.top - screen.top) / screen.height).toFixed(decimalPlaces),
+      ((w.left - screen.left) / screen.width).toFixed(decimalPlaces),
+      (w.width / screen.width).toFixed(decimalPlaces),
+      (w.height / screen.height).toFixed(decimalPlaces)
+    );
+  }
+
+  static calculateWindow(layout, screen) {
+    return new Rect(
+      Math.round(layout.top * screen.height + screen.top),
+      Math.round(layout.left * screen.width + screen.left),
+      Math.round(layout.width * screen.width),
+      Math.round(layout.height * screen.height)
     );
   }
 
@@ -21,6 +32,7 @@ class Rect {
 
   equals(other) {
     return (
+      other !== undefined &&
       this.top === other.top &&
       this.left === other.left &&
       this.width === other.width &&

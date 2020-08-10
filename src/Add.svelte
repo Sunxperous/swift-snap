@@ -1,5 +1,6 @@
 <script>
   import { layouts } from "./layout-manager.js";
+  export let disabled;
 </script>
 
 <style>
@@ -11,6 +12,9 @@
     cursor: pointer;
     padding: 4px 16px;
   }
+  button[disabled] {
+    opacity: 50%;
+  }
 </style>
 
-<button on:click={layouts.add}>Add current layout</button>
+<button {disabled} on:click={layouts.add}>Add current layout</button>

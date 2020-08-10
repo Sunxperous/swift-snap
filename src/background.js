@@ -7,7 +7,7 @@ const browser = chrome;
 browser.commands.onCommand.addListener((command) => {
   browser.system.display.getInfo(async (displays) => {
     const currWindow = await browser.windows.getCurrent();
-    screen = determineScreenOfWindow(currWindow, displays);
+    const screen = determineScreenOfWindow(currWindow, displays);
     const layout = Rect.forRatio(
       Rect.fromObj(currWindow),
       Rect.fromObj(screen)

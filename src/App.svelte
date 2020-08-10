@@ -1,15 +1,58 @@
 <script>
   import { layouts } from "./layout-manager.js";
   import { onDestroy } from "svelte";
+  import { determineScreenOfWindow } from "./snap.js";
+  import { Rect } from "./rect";
   import Add from "./Add.svelte";
   import Layout from "./Layout.svelte";
 
-  let l;
+  const browser = chrome;
+
+  let l, hasCurrent = false;
   const unsubscribe = layouts.subscribe(data => {
     l = data;
   });
 
   onDestroy(unsubscribe);
+
+  $: {
+    windowSize; // Dependent on this.
+    hasCurrent = false;
+    l = l.map(checkCurrent);
+  }
+
+  let screen = new Rect(0, 0, 0, 0),
+    windowSize = new Rect(-1, -1, -1, -1);
+
+  function refresh() {
+    browser.system.display.getInfo(async displays => {
+      const currWindow = await browser.windows.getCurrent();
+      screen = determineScreenOfWindow(currWindow, displays);
+      windowSize = Rect.fromObj(currWindow);
+    });
+  }
+
+  function checkCurrent(layout) {
+    layout.isCurrent = false;
+    if (windowSize.equals(Rect.calculateWindow(layout, screen))) {
+      layout.isCurrent = true;
+      hasCurrent = true;
+    }
+    return layout;
+  }
+  
+  browser.runtime.onConnect.addListener(port => {
+    if (port.name === "snap-shortcut") {
+      port.onMessage.addListener(msg => {
+        if (msg === "snap") {
+          refresh();
+        }
+      });
+    }
+  });
+
+  refresh();
+
 </script>
 
 <style>
@@ -30,6 +73,7 @@
     display: flex;
     flex-wrap: wrap;
     list-style-type: none;
+    margin-bottom: 8px;
   }
   li {
     align-items: center;
@@ -48,13 +92,13 @@
     <ol>
       {#each l as layout (layout)}
         <li>
-          <Layout {layout} />
+          <Layout {layout} isCurrent={layout.isCurrent} on:select={refresh} />
         </li>
       {/each}
     </ol>
   </section>
   <section>
-    <Add />
+    <Add disabled={hasCurrent} />
     <button on:click={layouts.clear}>Clear all</button>
   </section>
   <section class="branding">
