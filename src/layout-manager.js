@@ -51,9 +51,10 @@ function createLayoutsManager() {
       await browser.storage.local.set({ saved: saved });
       set(saved);
     },
-    clear: async () => {
-      await browser.storage.local.clear();
-      set([]);
+    reset: async () => {
+      await browser.runtime.sendMessage('reset');
+      const updated = await browser.storage.local.get({ saved: [] });
+      set(updated.saved);
     },
     snap: (layout, callback) => snap(layout, callback),
   };

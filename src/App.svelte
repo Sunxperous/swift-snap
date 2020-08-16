@@ -95,7 +95,7 @@
   </section>
   <section>
     <Add disabled={hasCurrent} />
-    <button on:click={layouts.clear}>Clear all</button>
+    <button on:click={layouts.reset}>Reset</button>
   </section>
   <section class="branding">
     <img src="icons/swift-snap-48.png" alt="Swift Snap logo." />

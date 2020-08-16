@@ -30,3 +30,85 @@ browser.commands.onCommand.addListener((command) => {
     }
   });
 });
+
+const defaults = [
+  {
+    top: 0,
+    left: 0,
+    width: 0.5,
+    height: 1.0,
+    shortcut: "swift-snap-left",
+  },
+  {
+    top: 0,
+    left: 0.5,
+    width: 0.5,
+    height: 1.0,
+    shortcut: "swift-snap-right",
+  },
+  {
+    top: 0,
+    left: 0,
+    width: 0.667,
+    height: 1.0,
+    shortcut: "swift-snap-left",
+  },
+  {
+    top: 0,
+    left: 0.333,
+    width: 0.667,
+    height: 1.0,
+    shortcut: "swift-snap-right",
+  },
+  {
+    top: 0,
+    left: 0,
+    width: 0.333,
+    height: 1.0,
+    shortcut: "swift-snap-left",
+  },
+  {
+    top: 0,
+    left: 0.667,
+    width: 0.333,
+    height: 1.0,
+    shortcut: "swift-snap-right",
+  },
+  {
+    top: 0,
+    left: 0,
+    width: 1.0,
+    height: 0.5,
+    shortcut: "swift-snap-up",
+  },
+  {
+    top: 0.5,
+    left: 0,
+    width: 1.0,
+    height: 0.5,
+    shortcut: "swift-snap-down",
+  },
+  {
+    top: 0,
+    left: 0,
+    width: 1.0,
+    height: 1.0,
+    shortcut: "swift-snap-up",
+  },
+];
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message !== "reset") {
+    return false;
+  }
+  browser.storage.local.set({ saved: defaults }, () => {
+    sendResponse("done");
+  });
+  return true;
+});
+
+browser.runtime.onInstalled.addListener((details) => {
+  if (details.reason === "install") {
+    browser.storage.local.set({ saved: defaults });
+  }
+});
