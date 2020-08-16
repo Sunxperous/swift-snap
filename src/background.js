@@ -8,10 +8,6 @@ browser.commands.onCommand.addListener((command) => {
   browser.system.display.getInfo(async (displays) => {
     const currWindow = await browser.windows.getCurrent();
     const screen = determineScreenOfWindow(currWindow, displays);
-    const layout = Rect.forRatio(
-      Rect.fromObj(currWindow),
-      Rect.fromObj(screen)
-    );
     const layouts = (await browser.storage.local.get()).saved;
     let firstMatch = -1;
     let matchesCurrentLayout = false;
@@ -21,7 +17,7 @@ browser.commands.onCommand.addListener((command) => {
           snap(layouts[i]);
           return;
         }
-        if (layout.equals(layouts[i])) {
+        if (Rect.calculateWindow(layouts[i], screen).equals(currWindow)) {
           matchesCurrentLayout = true;
         }
         if (firstMatch === -1) {
