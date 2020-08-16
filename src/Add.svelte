@@ -10,10 +10,10 @@
     border-radius: 4px;
     color: var(--primary-color);
     cursor: pointer;
-    padding: 4px 16px;
   }
   button[disabled] {
     opacity: 50%;
+    cursor: not-allowed;
   }
 </style>
 

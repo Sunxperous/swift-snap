@@ -8,7 +8,8 @@
 
   const browser = chrome;
 
-  let l, hasCurrent = false;
+  let l,
+    hasCurrent = false;
   const unsubscribe = layouts.subscribe(data => {
     l = data;
   });
@@ -40,7 +41,7 @@
     }
     return layout;
   }
-  
+
   browser.runtime.onConnect.addListener(port => {
     if (port.name === "snap-shortcut") {
       port.onMessage.addListener(msg => {
@@ -52,7 +53,6 @@
   });
 
   refresh();
-
 </script>
 
 <style>
@@ -65,13 +65,10 @@
     font-size: 1.4rem;
     margin: 8px;
   }
-  h2 {
-    margin: 8px 0;
-  }
   ol {
-    align-items: center;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr;
     list-style-type: none;
     margin-bottom: 8px;
   }
@@ -88,7 +85,6 @@
 
 <main>
   <section>
-    <h2>Saved layouts</h2>
     <ol>
       {#each l as layout (layout)}
         <li>

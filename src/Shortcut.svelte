@@ -13,6 +13,15 @@
 </script>
 
 <style>
+  select {
+    background-color: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  option {
+    background-color: var(--background-color);
+    padding: 0;
+  }
 </style>
 
 <select bind:value={shortcutName} on:change={handleSelect}>
