@@ -27,6 +27,8 @@
 <select bind:value={shortcutName} on:change={handleSelect}>
   <option value={''}>No shortcut selected</option>
   {#each Object.entries($shortcuts) as [name, shortcut] (name)}
-    <option value={name}>{shortcut}</option>
+    {#if name !== "move-next-display" && shortcut !== ''}
+      <option value={name}>{shortcut}</option>
+    {/if}
   {/each}
 </select>

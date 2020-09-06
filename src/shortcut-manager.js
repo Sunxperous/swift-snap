@@ -8,6 +8,7 @@ const supportedShortcuts = {
   "swift-snap-left": "",
   "swift-snap-right": "",
   "swift-snap-up": "",
+  "move-next-display": "",
 };
 
 async function loadAndSetShortcuts(set) {

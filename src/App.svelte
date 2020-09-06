@@ -1,7 +1,9 @@
 <script>
   import { layouts } from "./layout-manager.js";
-  import { onDestroy } from "svelte";
+  import { shortcuts } from "./shortcut-manager.js";
+  import { onMount } from "svelte";
   import { determineScreenOfWindow } from "./snap.js";
+  import { moveToNextDisplay } from "./move.js";
   import { Rect } from "./rect";
   import Add from "./Add.svelte";
   import Layout from "./Layout.svelte";
@@ -9,18 +11,24 @@
   const browser = chrome;
 
   let l,
-    hasCurrent = false;
-  const unsubscribe = layouts.subscribe(data => {
-    l = data;
-  });
-
-  onDestroy(unsubscribe);
+    hasCurrent = false,
+    hasMultipleDisplays = true,
+    moveShortcut = "";
 
   $: {
     windowSize; // Dependent on this.
     hasCurrent = false;
-    l = l.map(checkCurrent);
+    l = $layouts.map(checkCurrent);
+    moveShortcut = $shortcuts["move-next-display"]
+      ? ` (${$shortcuts["move-next-display"]})`
+      : "";
   }
+
+  onMount(() => {
+    browser.system.display.getInfo(displays => {
+      hasMultipleDisplays = displays.length > 1;
+    });
+  });
 
   let screen = new Rect(0, 0, 0, 0),
     windowSize = new Rect(-1, -1, -1, -1);
@@ -40,6 +48,11 @@
       hasCurrent = true;
     }
     return layout;
+  }
+
+  function configureShortcuts(event) {
+    event.preventDefault();
+    browser.tabs.create({ url: "chrome://extensions/shortcuts" });
   }
 
   browser.runtime.onConnect.addListener(port => {
@@ -76,6 +89,13 @@
     align-items: center;
     display: flex;
   }
+  .move {
+    margin-bottom: 8px;
+  }
+  a {
+    display: block;
+    margin-top: 8px;
+  }
   .branding {
     align-items: center;
     display: flex;
@@ -94,8 +114,21 @@
     </ol>
   </section>
   <section>
-    <Add disabled={hasCurrent} />
-    <button on:click={layouts.reset}>Reset</button>
+    {#if hasMultipleDisplays}
+      <button class="move" on:click={moveToNextDisplay}>
+        Move to next display{moveShortcut}
+      </button>
+    {/if}
+    <div>
+      <Add disabled={hasCurrent} />
+      <button on:click={layouts.reset}>Reset</button>
+    </div>
+    <a
+      href="chrome://extensions/shortcuts"
+      target="_blank"
+      on:click={configureShortcuts}>
+      Configure shortcuts
+    </a>
   </section>
   <section class="branding">
     <img src="icons/swift-snap-48.png" alt="Swift Snap logo." />

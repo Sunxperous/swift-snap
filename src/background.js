@@ -1,58 +1,20 @@
 import "chrome-extension-async";
-import {
-  determineScreenOfWindow,
-  isScreenInDisplay,
-  snap,
-  snapToScreen,
-} from "./snap.js";
+import { determineScreenOfWindow, snap } from "./snap.js";
 import { Rect } from "./rect.js";
+import { moveToNextDisplay } from "./move.js";
 
 const browser = chrome;
 
 browser.commands.onCommand.addListener((command) => {
+  if (command === "move-next-display") {
+    moveToNextDisplay();
+    return;
+  }
+
   browser.system.display.getInfo(async (displays) => {
     const currWindow = await browser.windows.getCurrent();
     const layouts = (await browser.storage.local.get()).saved;
     const screen = determineScreenOfWindow(currWindow, displays);
-
-    if (command === "switch-next-display") {
-      const currentLayout = layouts.filter((layout) =>
-        Rect.calculateWindow(layout, screen).equals(currWindow)
-      );
-      const nextScreenIndex =
-        (displays.findIndex((display) =>
-          isScreenInDisplay(currWindow, display)
-        ) +
-          1) %
-        displays.length;
-      if (currentLayout.length > 0) {
-        snapToScreen(currentLayout[0], displays[nextScreenIndex]);
-      } else {
-        const topDiff = currWindow.top - screen.top;
-        const leftDiff = currWindow.left - screen.left;
-        const newDisplay = displays[nextScreenIndex];
-        if (
-          topDiff <= newDisplay.workArea.height &&
-          leftDiff <= newDisplay.workArea.width &&
-          currWindow.width <= newDisplay.workArea.width &&
-          currWindow.height <= newDisplay.workArea.height
-        ) {
-          const newWindow = new Rect(
-            newDisplay.workArea.top + topDiff,
-            newDisplay.workArea.left + leftDiff,
-            currWindow.width,
-            currWindow.height
-          );
-          await browser.windows.update(currWindow.id, newWindow);
-        } else {
-          snapToScreen(
-            Rect.forRatio(Rect.fromObj(currWindow), Rect.fromObj(screen)),
-            displays[nextScreenIndex]
-          );
-        }
-        return;
-      }
-    }
 
     let firstMatch = -1;
     let matchesCurrentLayout = false;
@@ -125,13 +87,6 @@ const defaults = [
     width: 1.0,
     height: 0.5,
     shortcut: "swift-snap-up",
-  },
-  {
-    top: 0.5,
-    left: 0,
-    width: 1.0,
-    height: 0.5,
-    shortcut: "swift-snap-down",
   },
   {
     top: 0,
