@@ -45,6 +45,9 @@
         "mac": "Alt+Shift+Down"
       },
       "description": "Swift Snap Down"
+    },
+    "switch-next-display": {
+      "description": "Switch to next display"
     }
   },
   "permissions": ["storage", "system.display"]
