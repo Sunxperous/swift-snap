@@ -9,6 +9,11 @@ const supportedShortcuts = {
   "swift-snap-right": "",
   "swift-snap-up": "",
   "move-next-display": "",
+  "swift-snap-xtra-1": "",
+  "swift-snap-xtra-2": "",
+  "swift-snap-xtra-3": "",
+  "swift-snap-xtra-4": "",
+  "swift-snap-xtra-5": "",
 };
 
 async function loadAndSetShortcuts(set) {
