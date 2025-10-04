@@ -85,14 +85,14 @@ const defaults = [
     top: 0,
     left: 0,
     width: 1.0,
-    height: 0.5,
+    height: 1.0,
     shortcut: "swift-snap-up",
   },
   {
     top: 0,
     left: 0,
     width: 1.0,
-    height: 1.0,
+    height: 0.5,
     shortcut: "swift-snap-up",
   },
 ];
